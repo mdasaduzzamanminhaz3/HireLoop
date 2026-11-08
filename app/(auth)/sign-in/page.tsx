@@ -3,20 +3,47 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; 
 import { motion } from "framer-motion";
-import { Eye, EyeOff, ArrowLeft, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, Lock, Mail, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignInPage() {
+  const router = useRouter(); 
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [error, setError] = useState<string | null>(null); 
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Sign in data:", formData);
+    setError(null);
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    try {
+      const { data, error: authError } = await authClient.signIn.email({
+        email,
+        password,
+      });
+
+      if (authError) {
+        setError(authError.message || "Invalid email or password.");
+        setLoading(false);
+        return;
+      }
+
+      console.log("sign-in successfully", data);
+      
+      router.push("/");
+    } catch (err) {
+      console.error(err);
+      setError("An unexpected error occurred. Please try again.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,6 +100,14 @@ export default function SignInPage() {
             </p>
           </div>
         </div>
+
+        {/* Error Message Alert Box */}
+        {error && (
+          <div className="flex items-center gap-2 bg-red-500/15 border border-red-500/30 text-red-400 text-xs px-4 py-3 rounded-xl">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
         {/* Social Auth Buttons */}
         <div className="grid grid-cols-2 gap-3 pt-2">
@@ -135,12 +170,9 @@ export default function SignInPage() {
               <Mail className="absolute left-3.5 w-4 h-4 text-neutral-400 pointer-events-none" />
               <input
                 type="email"
+                name="email"
                 required
                 placeholder="name@company.com"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
                 className="w-full bg-[#16161a] border border-neutral-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
@@ -164,11 +196,8 @@ export default function SignInPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 required
+                name="password"
                 placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
                 className="w-full bg-[#16161a] border border-neutral-800 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
               />
               <button
@@ -188,9 +217,10 @@ export default function SignInPage() {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full mt-2 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg shadow-indigo-500/25 rounded-xl py-2.5 font-medium transition-all duration-300 active:scale-[0.98]"
+            disabled={loading}
+            className="w-full mt-2 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg shadow-indigo-500/25 rounded-xl py-2.5 font-medium transition-all duration-300 active:scale-[0.98] disabled:opacity-50"
           >
-            Sign In
+            {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
 
@@ -198,7 +228,7 @@ export default function SignInPage() {
         <p className="text-center text-xs text-neutral-400 pt-2">
           Don&apos;t have an account?{" "}
           <Link
-            href="#signup"
+            href="/sign-up"
             className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors"
           >
             Create account
