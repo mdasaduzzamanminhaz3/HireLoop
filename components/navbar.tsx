@@ -53,17 +53,16 @@ export function Navbar() {
           {/* Action Buttons */}
           <div className="flex items-center gap-4">
             <Link
-              href="#login"
+              href="/sign-in"
               className="text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors duration-200 px-2 py-1"
             >
               Sign In
             </Link>
 
             <Button
-              asChild
               className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg shadow-indigo-500/25 border-0 rounded-xl px-5 font-medium transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Link href="#get-started">Get Started</Link>
+              <Link href="/sign-up">Get Started</Link>
             </Button>
           </div>
         </div>
@@ -112,7 +111,6 @@ export function Navbar() {
                 Sign In
               </Link>
               <Button
-                asChild
                 className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg shadow-indigo-500/25 rounded-xl font-medium"
               >
                 <Link href="#get-started" onClick={() => setIsOpen(false)}>
