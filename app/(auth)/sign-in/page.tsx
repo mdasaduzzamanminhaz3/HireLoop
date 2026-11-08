@@ -14,7 +14,11 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null); 
   const [loading, setLoading] = useState(false);
-
+const handleSignIn = async () => {
+  const data = await authClient.signIn.social({
+    provider: "google",
+  });
+};
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -113,6 +117,7 @@ export default function SignInPage() {
         <div className="grid grid-cols-2 gap-3 pt-2">
           {/* Google Auth */}
           <button
+          onClick={handleSignIn}
             type="button"
             className="flex items-center justify-center gap-2.5 px-4 py-2.5 bg-[#18181c] hover:bg-[#202026] border border-neutral-800 rounded-xl text-xs sm:text-sm font-medium text-neutral-200 transition-all duration-200 active:scale-[0.98]"
           >
