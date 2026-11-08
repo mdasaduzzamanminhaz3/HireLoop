@@ -3,27 +3,57 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // <-- ১. রাউটার ইম্পোর্ট করা হয়েছে
 import { motion } from "framer-motion";
-import { Eye, EyeOff, ArrowLeft, Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, Lock, Mail, User, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignUpPage() {
+  const router = useRouter(); // <-- ২. রাউটার হুক ইনিশিয়ালাইজ করা হয়েছে
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+
+    // Password match validation
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
       return;
     }
-    console.log("Sign up data:", formData);
+
+    try {
+      setLoading(true);
+      const { data, error: authError } = await authClient.signUp.email({
+        email,
+        password,
+        name,
+      });
+
+      if (authError) {
+        setError(authError.message || "Something went wrong during sign up.");
+        setLoading(false);
+        return;
+      }
+
+      console.log("Signup success", data);
+      
+      router.push("/"); 
+    } catch (err) {
+      console.error(err);
+      setError("An unexpected error occurred.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -81,55 +111,13 @@ export default function SignUpPage() {
           </div>
         </div>
 
-        {/* Social Auth Buttons */}
-        <div className="grid grid-cols-2 gap-3 pt-2">
-          {/* Google Auth */}
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2.5 px-4 py-2.5 bg-[#18181c] hover:bg-[#202026] border border-neutral-800 rounded-xl text-xs sm:text-sm font-medium text-neutral-200 transition-all duration-200 active:scale-[0.98]"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24">
-              <path
-                fill="#EA4335"
-                d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"
-              />
-              <path
-                fill="#4285F4"
-                d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15s.7 5.3 1.9 7.7l3.7-2.9c-.4-.7-.6-1.5-.6-2.3z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"
-              />
-            </svg>
-            <span>Google</span>
-          </button>
-
-          {/* GitHub Auth */}
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2.5 px-4 py-2.5 bg-[#18181c] hover:bg-[#202026] border border-neutral-800 rounded-xl text-xs sm:text-sm font-medium text-neutral-200 transition-all duration-200 active:scale-[0.98]"
-          >
-            <svg className="w-4 h-4 fill-current text-white" viewBox="0 0 24 24">
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-            </svg>
-            <span>GitHub</span>
-          </button>
-        </div>
-
-        {/* Divider */}
-        <div className="relative flex items-center justify-center">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-neutral-800" />
+        {/* Error Message Alert */}
+        {error && (
+          <div className="flex items-center gap-2 bg-red-500/15 border border-red-500/30 text-red-400 text-xs px-4 py-3 rounded-xl">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
           </div>
-          <span className="relative px-3 bg-[#121215] text-[11px] font-mono uppercase text-neutral-500">
-            or register with email
-          </span>
-        </div>
+        )}
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -144,10 +132,7 @@ export default function SignUpPage() {
                 type="text"
                 required
                 placeholder="John Doe"
-                value={formData.fullName}
-                onChange={(e) =>
-                  setFormData({ ...formData, fullName: e.target.value })
-                }
+                name="name"
                 className="w-full bg-[#16161a] border border-neutral-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
@@ -164,10 +149,7 @@ export default function SignUpPage() {
                 type="email"
                 required
                 placeholder="name@company.com"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                name="email"
                 className="w-full bg-[#16161a] border border-neutral-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
@@ -184,10 +166,7 @@ export default function SignUpPage() {
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
+                name="password"
                 className="w-full bg-[#16161a] border border-neutral-800 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
               />
               <button
@@ -195,11 +174,7 @@ export default function SignUpPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3.5 text-neutral-400 hover:text-white transition-colors"
               >
-                {showPassword ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
@@ -215,10 +190,7 @@ export default function SignUpPage() {
                 type={showConfirmPassword ? "text" : "password"}
                 required
                 placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, confirmPassword: e.target.value })
-                }
+                name="confirmPassword"
                 className="w-full bg-[#16161a] border border-neutral-800 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
               />
               <button
@@ -226,11 +198,7 @@ export default function SignUpPage() {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3.5 text-neutral-400 hover:text-white transition-colors"
               >
-                {showConfirmPassword ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
+                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
@@ -238,9 +206,10 @@ export default function SignUpPage() {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full mt-2 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg shadow-indigo-500/25 rounded-xl py-2.5 font-medium transition-all duration-300 active:scale-[0.98]"
+            disabled={loading}
+            className="w-full mt-2 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg shadow-indigo-500/25 rounded-xl py-2.5 font-medium transition-all duration-300 active:scale-[0.98] disabled:opacity-50"
           >
-            Create Account
+            {loading ? "Creating account..." : "Create Account"}
           </Button>
         </form>
 
@@ -248,7 +217,7 @@ export default function SignUpPage() {
         <p className="text-center text-xs text-neutral-400 pt-2">
           Already have an account?{" "}
           <Link
-            href="/login"
+            href="/sign-in"
             className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors"
           >
             Sign In
