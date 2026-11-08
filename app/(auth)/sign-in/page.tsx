@@ -14,11 +14,19 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null); 
   const [loading, setLoading] = useState(false);
-const handleSignIn = async () => {
+const handleSignInGoogle = async () => {
   const data = await authClient.signIn.social({
     provider: "google",
+
   });
 };
+const handleSignInGithub = async () => {
+    const data = await authClient.signIn.social({
+        provider: "github"
+    })
+}
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -117,7 +125,7 @@ const handleSignIn = async () => {
         <div className="grid grid-cols-2 gap-3 pt-2">
           {/* Google Auth */}
           <button
-          onClick={handleSignIn}
+          onClick={handleSignInGoogle}
             type="button"
             className="flex items-center justify-center gap-2.5 px-4 py-2.5 bg-[#18181c] hover:bg-[#202026] border border-neutral-800 rounded-xl text-xs sm:text-sm font-medium text-neutral-200 transition-all duration-200 active:scale-[0.98]"
           >
@@ -145,6 +153,7 @@ const handleSignIn = async () => {
           {/* GitHub Auth */}
           <button
             type="button"
+            onClick={handleSignInGithub}
             className="flex items-center justify-center gap-2.5 px-4 py-2.5 bg-[#18181c] hover:bg-[#202026] border border-neutral-800 rounded-xl text-xs sm:text-sm font-medium text-neutral-200 transition-all duration-200 active:scale-[0.98]"
           >
             <svg className="w-4 h-4 fill-current text-white" viewBox="0 0 24 24">
