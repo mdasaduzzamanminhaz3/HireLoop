@@ -7,15 +7,18 @@ import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { signOut, useSession } from "@/lib/auth-client"
 
-const navLinks = [
-  { title: "Browse Jobs", href: "#browse-jobs" },
-  { title: "Company", href: "#company" },
-  { title: "Pricing", href: "#pricing" },
-]
+
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false)
-  const { data: session } = useSession()
+  const { data: session } = useSession();
+  const navLinks = [
+  { title: "Browse Jobs", href: "#browse-jobs" },
+  { title: "Company", href: "#company" },
+  { title: "Pricing", href: "#pricing" },
+  { title: "Dashboard", href: `/dashboard/${session?.user.role || 'seeker'}` },
+
+]
   // console.log(session?.user.name);
   const handleSignOut = async () => {
     await signOut()
