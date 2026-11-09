@@ -56,7 +56,7 @@ export default function SignUpPage() {
       }
 
       console.log("Signup success with role:", selectedRole, data);
-      
+      router.refresh();
       router.push("/");
     } catch (err) {
       console.error(err);

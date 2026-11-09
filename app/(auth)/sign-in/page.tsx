@@ -17,12 +17,14 @@ export default function SignInPage() {
 const handleSignInGoogle = async () => {
   const data = await authClient.signIn.social({
     provider: "google",
+    callbackURL: "/"
 
   });
 };
 const handleSignInGithub = async () => {
     const data = await authClient.signIn.social({
-        provider: "github"
+        provider: "github",
+        callbackURL: "/"
     })
 }
 
@@ -50,6 +52,7 @@ const handleSignInGithub = async () => {
 
       console.log("sign-in successfully", data);
       
+      router.refresh()
       router.push("/");
     } catch (err) {
       console.error(err);
