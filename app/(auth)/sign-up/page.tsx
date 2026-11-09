@@ -3,21 +3,28 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // <-- ১. রাউটার ইম্পোর্ট করা হয়েছে
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, ArrowLeft, Lock, Mail, User, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, Lock, Mail, User, AlertCircle, Briefcase, ShieldCheck, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
+const roles = [
+  { id: "seeker", label: "Job Seeker", icon: UserCheck, desc: "Find curated jobs" },
+  { id: "recruiter", label: "Recruiter", icon: Briefcase, desc: "Hire top talent" },
+  { id: "admin", label: "Admin", icon: ShieldCheck, desc: "Platform manager" },
+];
+
 export default function SignUpPage() {
-  const router = useRouter(); // <-- ২. রাউটার হুক ইনিশিয়ালাইজ করা হয়েছে
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("seeker");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setError(null);
 
     const formData = new FormData(e.currentTarget);
@@ -34,11 +41,13 @@ export default function SignUpPage() {
 
     try {
       setLoading(true);
+      
       const { data, error: authError } = await authClient.signUp.email({
         email,
         password,
         name,
-      });
+        role: selectedRole, 
+      }); 
 
       if (authError) {
         setError(authError.message || "Something went wrong during sign up.");
@@ -46,9 +55,9 @@ export default function SignUpPage() {
         return;
       }
 
-      console.log("Signup success", data);
+      console.log("Signup success with role:", selectedRole, data);
       
-      router.push("/"); 
+      router.push("/");
     } catch (err) {
       console.error(err);
       setError("An unexpected error occurred.");
@@ -84,7 +93,7 @@ export default function SignUpPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-md bg-[#121215]/90 border border-neutral-800/90 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-2xl space-y-6 my-12"
+        className="relative z-10 w-full max-w-lg bg-[#121215]/90 border border-neutral-800/90 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-2xl space-y-6 my-12"
       >
         {/* Brand Logo & Header */}
         <div className="text-center space-y-3">
@@ -106,7 +115,7 @@ export default function SignUpPage() {
               Create an account
             </h1>
             <p className="text-xs sm:text-sm text-neutral-400">
-              Join HireLoop and start applying to curated opportunities
+              Join HireLoop and choose your account type to get started
             </p>
           </div>
         </div>
@@ -121,6 +130,35 @@ export default function SignUpPage() {
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          
+          {/* Role Selection Tabs */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-neutral-300">
+              Select Your Role
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {roles.map((r) => {
+                const Icon = r.icon;
+                const isSelected = selectedRole === r.id;
+                return (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => setSelectedRole(r.id)}
+                    className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all duration-200 ${
+                      isSelected
+                        ? "bg-indigo-600/20 border-indigo-500 text-white shadow-lg shadow-indigo-500/10"
+                        : "bg-[#16161a] border-neutral-800 text-neutral-400 hover:border-neutral-700 hover:text-neutral-200"
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 mb-1.5 ${isSelected ? "text-indigo-400" : "text-neutral-400"}`} />
+                    <span className="text-xs font-semibold">{r.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Full Name Input */}
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-neutral-300">
@@ -209,15 +247,15 @@ export default function SignUpPage() {
             disabled={loading}
             className="w-full mt-2 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg shadow-indigo-500/25 rounded-xl py-2.5 font-medium transition-all duration-300 active:scale-[0.98] disabled:opacity-50"
           >
-            {loading ? "Creating account..." : "Create Account"}
+            {loading ? "Creating account..." : `Create Account as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}`}
           </Button>
         </form>
 
-        {/* Footer Link */}
+        {/* Footer Link (Make sure route matches your login route, e.g., /login or /sign-in) */}
         <p className="text-center text-xs text-neutral-400 pt-2">
           Already have an account?{" "}
           <Link
-            href="/sign-in"
+            href="/login" 
             className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors"
           >
             Sign In
