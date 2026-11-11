@@ -8,17 +8,32 @@ interface Job {
   company: string;
   location: string;
   jobType: string;
-  compensation: string;
-  applicants: string;
+  maxSalary:number;
+  minSalary:number;
+  applicants: number;
+  salaryFrequency:string;
   status: "Active" | "Expired" | string;
   deadline: string;
   posted: string;
   icon: LucideIcon;
   iconBg: string;
 }
+
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+};
+
 const JobPostRow = ({ job }:{job:Job}) => {
   const IconComponent = job.icon || Building2;
-  const isActive = job.status === "Active"
+  const isExpiredByDate = job.deadline ? new Date(job.deadline) < new Date() : false;
+  const isActive = job.status === "Active" && !isExpiredByDate;
   return (
     <tr className="group transition-colors hover:bg-[#16161a]/60">
       {/* Job Title & Dept */}
@@ -57,8 +72,14 @@ const JobPostRow = ({ job }:{job:Job}) => {
       </td>
 
       {/* Compensation */}
-      <td className="px-6 py-4 font-medium text-neutral-200">
-        {job.compensation}
+<td className="px-6 py-4 font-medium text-neutral-200">
+        {job.salaryFrequency === "per hour" ? (
+          
+          `€${job.minSalary}-€${job.maxSalary}/${job.salaryFrequency}`
+        ) : (
+         
+          `€${job.minSalary}k-€${job.maxSalary}k/${job.salaryFrequency}`
+        )}
       </td>
 
       {/* Applicants */}
@@ -85,8 +106,8 @@ const JobPostRow = ({ job }:{job:Job}) => {
       </td>
 
       {/* Deadline */}
-      <td className="px-6 py-4">
-        <div className="font-medium text-neutral-200">{job.deadline}</div>
+<td className="px-6 py-4">
+        <div className="font-medium text-neutral-200">{formatDate(job.deadline)}</div>
         <div className="mt-0.5 text-[10px] text-neutral-400">{job.posted}</div>
       </td>
 

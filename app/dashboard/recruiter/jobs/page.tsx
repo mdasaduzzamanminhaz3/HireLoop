@@ -12,8 +12,10 @@ export interface Job {
   company: string;
   location: string;
   jobType: string;
-  compensation: string;
-  applicants: string;
+maxSalary:number;
+  minSalary:number;
+  applicants: number;
+  salaryFrequency:string;
   status: "Active" | "Expired" | string;
   deadline: string;
   posted: string;

@@ -26,6 +26,8 @@ export type JobFormData = {
   responsibilities: string;
   requirements: string;
   status: string;
+  applicants: number;
+  posted:string
 };
 
 export default function CreateJobPage() {
@@ -35,7 +37,11 @@ export default function CreateJobPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+    const currentDate = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(new Date());
     formData.set("jobType", jobType);
     formData.set("isRemote", String(isRemote));
     formData.set("status", "Active");
@@ -56,6 +62,8 @@ export default function CreateJobPage() {
       responsibilities: rawData.responsibilities as string,
       requirements: rawData.requirements as string,
       status: "Active",
+      applicants:0,
+      posted:currentDate,
     };
 
     console.log("Submitting Job Data:", jobData);
