@@ -1,8 +1,23 @@
-import { MapPin, MoreVertical, Pencil, Trash2, Users } from "lucide-react"
+import { Building2, LucideIcon, MapPin, MoreVertical, Pencil, Trash2, Users } from "lucide-react"
 import React from "react"
-
-const JobPostRow = ({ job }) => {
-  const IconComponent = job.icon
+import DeleteJobDialog from "./DeleteJobDialog";
+interface Job {
+  _id: string;
+  title: string;
+  dept: string;
+  company: string;
+  location: string;
+  type: string;
+  compensation: string;
+  applicants: string;
+  status: "Active" | "Expired" | string;
+  deadline: string;
+  posted: string;
+  icon: LucideIcon;
+  iconBg: string;
+}
+const JobPostRow = ({ job }:{job:Job}) => {
+  const IconComponent = job.icon || Building2;
   const isActive = job.status === "Active"
   return (
     <tr className="group transition-colors hover:bg-[#16161a]/60">
@@ -12,7 +27,7 @@ const JobPostRow = ({ job }) => {
           <div
             className={`rounded-xl border p-2.5 ${job.iconBg} flex items-center justify-center`}
           >
-            <IconComponent className="h-4 w-4" />
+            {IconComponent && <IconComponent className="h-4 w-4" />}
           </div>
           <div>
             <div className="font-semibold text-white transition-colors group-hover:text-indigo-400">
@@ -82,12 +97,11 @@ const JobPostRow = ({ job }) => {
             <Pencil className="h-3.5 w-3.5 text-neutral-400" />
             <span>Update</span>
           </button>
-          <button
-            className="cursor-pointer rounded-xl border border-neutral-700/60 bg-neutral-800 p-1.5 text-neutral-400 transition-colors hover:bg-rose-500/20 hover:text-rose-400"
-            title="Delete"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
+
+
+            <DeleteJobDialog job={job}/>
+
+
           <button className="cursor-pointer rounded-xl border border-neutral-700/60 bg-neutral-800 p-1.5 text-neutral-400 transition-colors hover:bg-neutral-700 hover:text-white">
             <MoreVertical className="h-3.5 w-3.5" />
           </button>

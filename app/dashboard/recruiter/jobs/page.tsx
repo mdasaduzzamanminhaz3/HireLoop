@@ -1,11 +1,12 @@
 import JobPostRow from '@/app/components/JobPostRow';
-import { Code,Sigma, Megaphone, Plus, Server, ShieldCheck, LucideIcon } from 'lucide-react';
+import { getJobs } from '@/lib/api/jobs';
+import { Plus,LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
 
-interface JobPost {
-  id: number;
+export interface Job {
+ _id:string;
   title: string;
   dept: string;
   company: string;
@@ -20,84 +21,9 @@ interface JobPost {
   iconBg: string;
 }
 
-const jobPosts: JobPost[] = [
-  {
-    id: 1,
-    title: "Frontend Developer",
-    dept: "Engineering",
-    company: "HirePulse Network",
-    location: "Remote (New York, USA)",
-    type: "Full-time",
-    compensation: "€25 - €40 / hr",
-    applicants: "34 Candidates",
-    status: "Active",
-    deadline: "May 30, 2025",
-    posted: "Posted 4d ago",
-    icon: Code,
-    iconBg: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  },
-  {
-    id: 2,
-    title: "Senior Product Designer",
-    dept: "Design",
-    company: "HirePulse Labs",
-    location: "London, UK (Hybrid)",
-    type: "Full-time",
-    compensation: "€90k - €115k / yr",
-    applicants: "19 Candidates",
-    status: "Active",
-    deadline: "Jun 14, 2025",
-    posted: "Posted 1w ago",
-    icon: Sigma,
-    iconBg: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  },
-  {
-    id: 3,
-    title: "DevOps Specialist",
-    dept: "Infrastructure",
-    company: "HirePulse Platform",
-    location: "Berlin, Germany",
-    type: "Full-time",
-    compensation: "€95k - €120k / yr",
-    applicants: "12 Candidates",
-    status: "Active",
-    deadline: "Jun 30, 2025",
-    posted: "Posted 2w ago",
-    icon: Server,
-    iconBg: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  },
-  {
-    id: 4,
-    title: "Product Marketing Lead",
-    dept: "Marketing",
-    company: "HirePulse Network",
-    location: "Remote (EU/US)",
-    type: "Full-time",
-    compensation: "€80k - €105k / yr",
-    applicants: "27 Candidates",
-    status: "Active",
-    deadline: "Jul 15, 2025",
-    posted: "Posted 5d ago",
-    icon: Megaphone,
-    iconBg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  },
-  {
-    id: 5,
-    title: "QA Automation Engineer",
-    dept: "Quality",
-    company: "HirePulse Platform",
-    location: "Dublin, Ireland (Hybrid)",
-    type: "Part-time",
-    compensation: "€35 - €50 / hr",
-    applicants: "8 Candidates",
-    status: "Expired",
-    deadline: "May 01, 2025",
-    posted: "Closed",
-    icon: ShieldCheck,
-    iconBg: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",
-  },
-];
-const ManageJobPage = () => {
+
+const ManageJobPage = async() => {
+    const jobs = await getJobs();
     return (
 <div className="flex-1 w-full min-h-screen bg-[#0c0c0e] text-white p-6 md:p-10">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -142,8 +68,8 @@ const ManageJobPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-800/60 text-xs">
-                {jobPosts.map((job) => (
-                  <JobPostRow key={job.id} job={job} />
+                {jobs.map((job:Job) => (
+                  <JobPostRow key={job._id} job={job} />
                 ))}
               </tbody>
             </table>
