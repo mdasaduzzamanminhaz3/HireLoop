@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { 
   Building2, 
   MapPin, 
@@ -11,13 +9,36 @@ import {
   ArrowRight, 
   Globe 
 } from "lucide-react";
+import { createJob } from "@/lib/actions/jobs";
+
+export type JobFormData = {
+  title:string
+  companyName:string
+  category:string
+  jobType:string
+  isRemote:boolean
+  location:string
+  deadline:string
+  minSalary:string
+  maxSalary:string
+  salaryFrequency:string
+  responsibilities:string
+  requirements:string
+}
 
 export default function CreateJobPage() {
   const [jobType, setJobType] = useState("Full-time");
   const [isRemote, setIsRemote] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const jobData:JobFormData = Object.fromEntries(formData.entries());
+    console.log(jobData);
+
+    const result =await createJob(jobData);
+    console.log(result);
+
     console.log("Job Published!");
   };
 
@@ -37,13 +58,7 @@ export default function CreateJobPage() {
             </p>
           </div>
           
-          <button
-            onClick={handleSubmit}
-            className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs md:text-sm px-5 py-2.5 rounded-xl transition-all shadow-sm self-start md:self-auto cursor-pointer"
-          >
-            <span>Publish Job</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+
         </div>
 
         {/* Main Form */}
@@ -64,6 +79,7 @@ export default function CreateJobPage() {
                 </label>
                 <input
                   type="text"
+                  name="title"
                   defaultValue="Frontend Developer"
                   className="w-full bg-[#18181c] border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
                 />
@@ -79,6 +95,7 @@ export default function CreateJobPage() {
                     <Building2 className="absolute left-3.5 w-4 h-4 text-neutral-500" />
                     <input
                       type="text"
+                      name="companyName"
                       defaultValue="HirePulse Network"
                       className="w-full bg-[#18181c] border border-neutral-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
                     />
@@ -90,6 +107,7 @@ export default function CreateJobPage() {
                     Job Category <span className="text-rose-500">*</span>
                   </label>
                   <select
+                  name="category"
                     className="w-full bg-[#18181c] border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors appearance-none cursor-pointer"
                   >
                     <option>Engineering & Tech</option>
@@ -169,6 +187,7 @@ export default function CreateJobPage() {
                     <MapPin className="absolute left-3.5 w-4 h-4 text-neutral-500" />
                     <input
                       type="text"
+                      name="location"
                       defaultValue="New York, USA"
                       className="w-full bg-[#18181c] border border-neutral-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
                     />
@@ -183,6 +202,7 @@ export default function CreateJobPage() {
                     <Calendar className="absolute left-3.5 w-4 h-4 text-neutral-500 pointer-events-none z-10" />
                     <input
                       type="date"
+                      name="deadline"
                       className="w-full bg-[#18181c] border border-neutral-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                     />
                   </div>
@@ -197,6 +217,7 @@ export default function CreateJobPage() {
                     <Euro className="absolute left-3.5 w-4 h-4 text-neutral-500" />
                     <input
                       type="text"
+                      name="minSalary"
                       defaultValue="25"
                       className="w-full bg-[#18181c] border border-neutral-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
                     />
@@ -209,6 +230,7 @@ export default function CreateJobPage() {
                     <Euro className="absolute left-3.5 w-4 h-4 text-neutral-500" />
                     <input
                       type="text"
+                      name="maxSalary"
                       defaultValue="40"
                       className="w-full bg-[#18181c] border border-neutral-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
                     />
@@ -218,6 +240,7 @@ export default function CreateJobPage() {
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-neutral-300">Frequency</label>
                   <select
+                  name="salaryFrequency"
                     className="w-full bg-[#18181c] border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors appearance-none cursor-pointer"
                   >
                     <option>per hour</option>
@@ -245,6 +268,7 @@ export default function CreateJobPage() {
                 </label>
                 <textarea
                   rows={3}
+                  name="responsibilities"
                   defaultValue="Showcase your commitment to delivering exceptional user interfaces and digital experiences. You will collaborate directly with systems designers and backend engineers to craft responsive, micro-interaction rich products."
                   className="w-full bg-[#18181c] border border-neutral-800 rounded-xl p-3.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors resize-none"
                 />
@@ -256,6 +280,7 @@ export default function CreateJobPage() {
                   Qualifications & Requirements <span className="text-rose-500">*</span>
                 </label>
                 <textarea
+                name="requirements"
                   rows={3}
                   defaultValue="• 3+ years of experience with React, TypeScript, and modern state architectures&#10;• Solid understanding of DOM performance and component-driven designs&#10;• Experience partnering closely with product teams and UI/UX designers"
                   className="w-full bg-[#18181c] border border-neutral-800 rounded-xl p-3.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors resize-none"
@@ -264,6 +289,16 @@ export default function CreateJobPage() {
             </div>
           </div>
 
+            <section>
+              <button
+              type="submit"
+            // onClick={handleSubmit}
+            className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs md:text-sm px-5 py-2.5 rounded-xl transition-all shadow-sm self-start md:self-auto cursor-pointer"
+          >
+            <span>Publish Job</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+            </section>
         </form>
 
       </div>
