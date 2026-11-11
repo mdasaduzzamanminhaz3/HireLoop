@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { createJob } from "@/lib/actions/jobs";
 import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 export type JobFormData = {
   title: string;
@@ -33,7 +34,7 @@ export type JobFormData = {
 export default function CreateJobPage() {
   const [jobType, setJobType] = useState("Full-time");
   const [isRemote, setIsRemote] = useState(false);
-
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -73,6 +74,7 @@ export default function CreateJobPage() {
       toast.add({
         title: "Job Published successfully!",
       });
+      router.push('/dashboard/recruiter/jobs')
     }
     console.log(result);
   };
