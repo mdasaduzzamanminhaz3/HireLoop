@@ -7,7 +7,7 @@ interface Job {
   dept: string;
   company: string;
   location: string;
-  type: string;
+  jobType: string;
   compensation: string;
   applicants: string;
   status: "Active" | "Expired" | string;
@@ -52,7 +52,7 @@ const JobPostRow = ({ job }:{job:Job}) => {
       {/* Type */}
       <td className="px-6 py-4">
         <span className="inline-flex items-center rounded-lg border border-neutral-700/50 bg-neutral-800 px-2.5 py-1 text-[11px] font-medium text-neutral-300">
-          {job.type}
+          {job.jobType}
         </span>
       </td>
 

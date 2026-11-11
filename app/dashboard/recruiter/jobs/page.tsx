@@ -11,7 +11,7 @@ export interface Job {
   dept: string;
   company: string;
   location: string;
-  type: string;
+  jobType: string;
   compensation: string;
   applicants: string;
   status: "Active" | "Expired" | string;

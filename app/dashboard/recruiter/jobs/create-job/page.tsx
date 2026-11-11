@@ -10,36 +10,63 @@ import {
   Globe 
 } from "lucide-react";
 import { createJob } from "@/lib/actions/jobs";
+import { toast } from "@/components/ui/toast";
 
 export type JobFormData = {
-  title:string
-  companyName:string
-  category:string
-  jobType:string
-  isRemote:boolean
-  location:string
-  deadline:string
-  minSalary:string
-  maxSalary:string
-  salaryFrequency:string
-  responsibilities:string
-  requirements:string
-}
+  title: string;
+  companyName: string;
+  category: string;
+  jobType: string;
+  isRemote: boolean;
+  location: string;
+  deadline: string;
+  minSalary: string;
+  maxSalary: string;
+  salaryFrequency: string;
+  responsibilities: string;
+  requirements: string;
+  status: string;
+};
 
 export default function CreateJobPage() {
   const [jobType, setJobType] = useState("Full-time");
   const [isRemote, setIsRemote] = useState(false);
 
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const jobData:JobFormData = Object.fromEntries(formData.entries());
-    console.log(jobData);
+    
+    formData.set("jobType", jobType);
+    formData.set("isRemote", String(isRemote));
+    formData.set("status", "Active");
 
-    const result =await createJob(jobData);
+    const rawData = Object.fromEntries(formData.entries());
+    
+    const jobData: JobFormData = {
+      title: rawData.title as string,
+      companyName: rawData.companyName as string,
+      category: rawData.category as string,
+      jobType: jobType, 
+      isRemote: isRemote,
+      location: rawData.location as string,
+      deadline: rawData.deadline as string,
+      minSalary: rawData.minSalary as string,
+      maxSalary: rawData.maxSalary as string,
+      salaryFrequency: rawData.salaryFrequency as string,
+      responsibilities: rawData.responsibilities as string,
+      requirements: rawData.requirements as string,
+      status: "Active",
+    };
+
+    console.log("Submitting Job Data:", jobData);
+
+    const result = await createJob(jobData);
+    if (result.acknowledged === true) {
+      toast.add({
+        title: "Job Published successfully!",
+      });
+    }
     console.log(result);
-
-    console.log("Job Published!");
   };
 
   return (
@@ -57,8 +84,6 @@ export default function CreateJobPage() {
               Fill in the position specifications to attract qualified talent across our network.
             </p>
           </div>
-          
-
         </div>
 
         {/* Main Form */}
@@ -107,7 +132,7 @@ export default function CreateJobPage() {
                     Job Category <span className="text-rose-500">*</span>
                   </label>
                   <select
-                  name="category"
+                    name="category"
                     className="w-full bg-[#18181c] border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors appearance-none cursor-pointer"
                   >
                     <option>Engineering & Tech</option>
@@ -157,7 +182,7 @@ export default function CreateJobPage() {
                 <div className="flex items-center gap-3">
                   <Globe className="w-4 h-4 text-neutral-400" />
                   <div>
-                    <div className="text-xs font-medium text-white">Remote Work Allowed (isRemote)</div>
+                    <div className="text-xs font-medium text-white">Remote Work Allowed</div>
                     <div className="text-[10px] text-neutral-400">Enable worldwide or distributed candidate applications</div>
                   </div>
                 </div>
@@ -180,7 +205,7 @@ export default function CreateJobPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-medium text-neutral-300">Job Location (location)</label>
+                    <label className="text-xs font-medium text-neutral-300">Job Location</label>
                     <span className="text-[10px] text-neutral-500">Required</span>
                   </div>
                   <div className="relative flex items-center">
@@ -196,13 +221,14 @@ export default function CreateJobPage() {
 
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-medium text-neutral-300">Application Deadline (deadline)</label>
+                    <label className="text-xs font-medium text-neutral-300">Application Deadline</label>
                   </div>
                   <div className="relative flex items-center">
                     <Calendar className="absolute left-3.5 w-4 h-4 text-neutral-500 pointer-events-none z-10" />
                     <input
                       type="date"
                       name="deadline"
+                      required
                       className="w-full bg-[#18181c] border border-neutral-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                     />
                   </div>
@@ -240,7 +266,7 @@ export default function CreateJobPage() {
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-neutral-300">Frequency</label>
                   <select
-                  name="salaryFrequency"
+                    name="salaryFrequency"
                     className="w-full bg-[#18181c] border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors appearance-none cursor-pointer"
                   >
                     <option>per hour</option>
@@ -280,7 +306,7 @@ export default function CreateJobPage() {
                   Qualifications & Requirements <span className="text-rose-500">*</span>
                 </label>
                 <textarea
-                name="requirements"
+                  name="requirements"
                   rows={3}
                   defaultValue="• 3+ years of experience with React, TypeScript, and modern state architectures&#10;• Solid understanding of DOM performance and component-driven designs&#10;• Experience partnering closely with product teams and UI/UX designers"
                   className="w-full bg-[#18181c] border border-neutral-800 rounded-xl p-3.5 text-xs md:text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors resize-none"
@@ -289,16 +315,15 @@ export default function CreateJobPage() {
             </div>
           </div>
 
-            <section>
-              <button
+          <section>
+            <button
               type="submit"
-            // onClick={handleSubmit}
-            className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs md:text-sm px-5 py-2.5 rounded-xl transition-all shadow-sm self-start md:self-auto cursor-pointer"
-          >
-            <span>Publish Job</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-            </section>
+              className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs md:text-sm px-5 py-2.5 rounded-xl transition-all shadow-sm self-start md:self-auto cursor-pointer"
+            >
+              <span>Publish Job</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </section>
         </form>
 
       </div>
