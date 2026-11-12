@@ -1,14 +1,19 @@
 "use client"
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react"
+import { useRouter } from "next/navigation";
 import React from "react"
 
 const JobSearchBox = () => {
+    const router = useRouter();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const data = Object.fromEntries(formData.entries())
-    console.log(data) 
+    const search = data.searchField;
+    const params = new URLSearchParams();
+    params.set('search',search as string);
+    router.push(`/browse-jobs?${params.toString()}`)
   }
 
   return (
@@ -20,7 +25,7 @@ const JobSearchBox = () => {
         <Search className="absolute left-4 h-4 w-4 text-neutral-400" />
         <Input
           type="text" 
-          name="search" 
+          name="searchField" 
           placeholder="Search by job title, keywords..."
           className="w-full rounded-xl border border-neutral-800 bg-[#18181c] py-3 pr-4 pl-11 text-xs text-white transition-colors focus:border-indigo-500 focus:outline-none md:text-sm"
         />
