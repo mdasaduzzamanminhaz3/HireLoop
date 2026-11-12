@@ -13,7 +13,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false)
   const { data: session } = useSession();
   const navLinks = [
-  { title: "Browse Jobs", href: "#browse-jobs" },
+  { title: "Browse Jobs", href: "/browse-jobs" },
   { title: "Company", href: "#company" },
   { title: "Pricing", href: "#pricing" },
   { title: "Dashboard", href: `/dashboard/${session?.user.role || 'seeker'}` },
