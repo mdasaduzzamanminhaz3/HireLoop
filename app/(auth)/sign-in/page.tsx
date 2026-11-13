@@ -3,28 +3,31 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; 
+import { useRouter, useSearchParams } from "next/navigation"; 
 import { motion } from "framer-motion";
 import { Eye, EyeOff, ArrowLeft, Lock, Mail, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
 export default function SignInPage() {
-  const router = useRouter(); 
-  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+   const searchParams = useSearchParams();
+   const redirectTo = searchParams.get("redirectTo")??"/"
+  console.log("redirectTo: ",redirectTo);
+   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null); 
   const [loading, setLoading] = useState(false);
 const handleSignInGoogle = async () => {
   const data = await authClient.signIn.social({
     provider: "google",
-    callbackURL: "/"
+    callbackURL: redirectTo
 
   });
 };
 const handleSignInGithub = async () => {
     const data = await authClient.signIn.social({
         provider: "github",
-        callbackURL: "/"
+        callbackURL: redirectTo
     })
 }
 
@@ -42,6 +45,7 @@ const handleSignInGithub = async () => {
       const { data, error: authError } = await authClient.signIn.email({
         email,
         password,
+        callbackURL:redirectTo
       });
 
       if (authError) {

@@ -19,3 +19,5 @@ export const deleteJob = async (jobId:string) => {
     })
     return res.json()
 }
+
+

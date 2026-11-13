@@ -57,6 +57,7 @@ const frequency = job?.salaryFrequency ? job.salaryFrequency.replace("per ", "")
           title={jobData.title}
           company={jobData.company}
           isVerified={jobData.isVerified}
+          job={job}
         />
 
         {/* Main 2-Column Layout */}
