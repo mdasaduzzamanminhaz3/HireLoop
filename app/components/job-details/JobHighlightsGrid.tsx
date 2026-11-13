@@ -5,14 +5,12 @@ interface JobHighlightsProps {
   salaryRange: string;
   location: string;
   jobType: string;
-  experience: string;
 }
 
 export default function JobHighlightsGrid({
   salaryRange,
   location,
   jobType,
-  experience,
 }: JobHighlightsProps) {
   const highlights = [
     {
@@ -32,7 +30,7 @@ export default function JobHighlightsGrid({
     },
     {
       label: "EXPERIENCE",
-      value: experience,
+      value: 1,
       icon: BarChart3,
     },
   ];
