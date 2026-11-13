@@ -1,5 +1,6 @@
 import React from "react";
 import { Bookmark, Briefcase, DollarSign } from "lucide-react";
+import Link from "next/link";
 
 export default function JobCard({ job }: { job: any }) {
   return (
@@ -8,7 +9,7 @@ export default function JobCard({ job }: { job: any }) {
         <div className="w-12 h-12 rounded-xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold shrink-0">
           {job.title?.charAt(0) || "J"}
         </div>
-        
+        <Link href={`browse-jobs/${job._id}`}>
         <div className="space-y-1">
           <h3 className="text-sm md:text-base font-semibold text-white group-hover:text-indigo-400 transition-colors">
             {job.title}
@@ -33,6 +34,7 @@ export default function JobCard({ job }: { job: any }) {
             )}
           </div>
         </div>
+        </Link>
       </div>
 
       <button className="p-2.5 rounded-xl bg-[#18181c] border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 transition-colors self-end md:self-center cursor-pointer">
