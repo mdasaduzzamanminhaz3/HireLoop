@@ -5,6 +5,7 @@ import { Bookmark, CheckCircle2, Layers } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { applyToAJob } from "@/lib/actions/applications";
+import { toast } from "@/components/ui/toast";
 
 export interface JobType {
   _id: string;
@@ -22,6 +23,7 @@ export interface ApplicationPayload {
   email: string;
   jobTitle: string;
   companyName: string;
+  applyDate?: Date | string;
 }
 
 
@@ -51,11 +53,13 @@ export default function JobHeaderCard({
                 userId:user.id,
                 email:user.email,
                 jobTitle: job.title,
-                companyName:job.companyName
+                companyName:job.companyName,
+                applyDate: new Date()
             }
             const res = await applyToAJob(application);
             console.log(res);
             if(res.acknowledged===true){
+                toast.add({title:"Application Submit successfully!"})
                 router.push('/browse-jobs')
             } 
         }else{

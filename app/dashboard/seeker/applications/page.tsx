@@ -1,53 +1,18 @@
 import React from "react";
-import { Search, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import ApplicationStatsCard from "@/app/components/applications/ApplicationStatsCard";
 import ApplicationRow from "@/app/components/applications/ApplicationRow";
+import { getApplications } from "@/lib/api/jobs";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 
 const MyApplicationsPage = async () => {
-  // ডামি ডাটা (পরে ব্যাকএন্ড থেকে ফেচ করে বসাবেন)
-  const applications = [
-    {
-      _id: "1",
-      jobTitle: "Senior Frontend Engineer",
-      companyName: "Stark Industries",
-      jobType: "Full-time",
-      appliedDate: "2 hours ago",
-      status: "Applied",
-    },
-    {
-      _id: "2",
-      jobTitle: "Product Designer",
-      companyName: "Cyberdyne Systems",
-      jobType: "Contract",
-      appliedDate: "1 day ago",
-      status: "Review",
-    },
-    {
-      _id: "3",
-      jobTitle: "Lead Data Scientist",
-      companyName: "Wayne Enterprises",
-      jobType: "Full-time",
-      appliedDate: "4 days ago",
-      status: "Shortlisted",
-    },
-    {
-      _id: "4",
-      jobTitle: "Cloud Architect",
-      companyName: "Oscorp Tech",
-      jobType: "Full-time",
-      appliedDate: "1 week ago",
-      status: "Rejected",
-    },
-    {
-      _id: "5",
-      jobTitle: "AI Research Engineer",
-      companyName: "Hooli Corp",
-      jobType: "Full-time",
-      appliedDate: "2 weeks ago",
-      status: "Offered",
-    },
-  ];
 
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+const applications = await getApplications(`applicantId=${session?.user.id}`);
+  
   return (
     <div className="min-h-screen bg-[#0c0c0e] text-white pt-24 px-6 md:px-10 pb-12">
       <div className="max-w-7xl mx-auto space-y-8">

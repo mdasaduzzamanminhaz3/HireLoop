@@ -2,18 +2,38 @@ import React from "react";
 import { Building2 } from "lucide-react";
 import Link from "next/link";
 
-interface Application {
-  _id: string;
+export interface Application {
+  _id: {
+    $oid?: string;
+  } | string;
+  jobId: string;
+  userId: string;
+  email: string;
   jobTitle: string;
   companyName: string;
-  jobType: string;
-  appliedDate: string;
-  status: "Applied" | "Review" | "Shortlisted" | "Rejected" | "Offered" | string;
+  jobType?: string;
+  applyDate?: string;    
+  appliedDate?: string;  
+  status?: string;
 }
 
 export default function ApplicationRow({ app }: { app: Application }) {
-  // স্ট্যাটাস অনুযায়ী কালার ও স্টাইল নির্ধারণ
-  const getStatusBadge = (status: string) => {
+ 
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "Recently";
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  
+  const getStatusBadge = (status?: string) => {
     switch (status?.toLowerCase()) {
       case "applied":
         return "bg-neutral-800/80 border-neutral-700 text-neutral-300";
@@ -30,6 +50,9 @@ export default function ApplicationRow({ app }: { app: Application }) {
     }
   };
 
+  // _id jodi MongoDB ObjectId object ($oid) akare ashe, seta string-e convert korar jonno
+  const appId = typeof app._id === "object" && app._id !== null ? app._id.$oid : app._id;
+
   return (
     <tr className="group transition-colors hover:bg-[#16161a]/60 border-b border-neutral-800/60 last:border-none">
       {/* Job Title & Type */}
@@ -43,7 +66,7 @@ export default function ApplicationRow({ app }: { app: Application }) {
               {app.jobTitle}
             </div>
             <div className="mt-0.5 text-[11px] text-neutral-400">
-              {app.jobType} • Remote
+              {app.jobType || "Full-time"} • Remote
             </div>
           </div>
         </div>
@@ -56,7 +79,7 @@ export default function ApplicationRow({ app }: { app: Application }) {
 
       {/* Applied Date */}
       <td className="px-6 py-4 text-xs text-neutral-400">
-        {app.appliedDate || "2 hours ago"}
+        {formatDate(app.applyDate || app.appliedDate)}
       </td>
 
       {/* Status Badge */}
@@ -73,7 +96,7 @@ export default function ApplicationRow({ app }: { app: Application }) {
       {/* Action */}
       <td className="px-6 py-4 text-right">
         <Link
-          href={`/applications/${app._id}`}
+          href={`/applications/${appId}`}
           className="text-xs font-medium text-neutral-400 hover:text-white transition-colors"
         >
           Details

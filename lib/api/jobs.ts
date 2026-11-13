@@ -10,3 +10,8 @@ export const getJobById = async(jobId:string)=> {
     const res = await fetch(`${BASE_URL}/jobs/${jobId}`)
     return res.json()
 }
+
+export const getApplications = async(query="") => {
+    const res = await fetch(`${BASE_URL}/applications?${query}`)
+    return res.json()
+}
