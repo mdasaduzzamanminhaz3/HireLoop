@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { applyToAJob } from "@/lib/actions/applications"
 import { toast } from "@/components/ui/toast"
 import { getApplicationCount } from "@/lib/api/jobs"
+import { getUserPRemiumById } from "@/lib/api/users";
 
 export interface JobType {
   _id: string
@@ -51,10 +52,14 @@ export default function JobHeaderCard({
       router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
       return
     } else if (user.role === "seeker") {
+      // is premium user
+      const premiumResult = await getUserPRemiumById(user.id);
+      console.log(premiumResult);
+      
       // number of jobs applied by this user
       const countResult = await getApplicationCount(`applicantId=${user.id}`)
-      if (countResult.count >= 10) {
-        router.push("/payment")
+      if (!premiumResult.premium && countResult.count >= 2) {
+        router.push("/checkout")
         return
       } else {
         // Todo: only send jobId and userId or email address for the application
@@ -72,11 +77,13 @@ export default function JobHeaderCard({
           salaryFrequency: job.salaryFrequency,
           deadline: job.deadline,
           applyDate: new Date(),
+          status:"applied",
+          archived:false,
         }
         const res = await applyToAJob(application)
         console.log(res)
         if (res.acknowledged === true) {
-          toast.add({ title: "Application Submit successfully!" })
+          toast.add({title:"Application submited",description:"Your application has been submited successfully"})
           router.push("/browse-jobs")
         }
       }
