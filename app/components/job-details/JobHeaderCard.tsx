@@ -26,6 +26,7 @@ export interface JobType {
 export interface ApplicationPayload {
   jobId: string
   userId: string
+  applicantName: string;
   email: string
   jobTitle: string
   companyName: string
@@ -66,6 +67,7 @@ export default function JobHeaderCard({
         const application = {
           jobId: job._id,
           userId: user.id,
+          applicantName: user.name || "Unknown Applicant",
           email: user.email,
           jobTitle: job.title,
           companyName: job.companyName,

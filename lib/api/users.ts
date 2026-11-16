@@ -4,3 +4,8 @@ export const getUserPRemiumById = async (userId:string)=>{
     const res = await fetch(`${BASE_URL}/users/${userId}/premium`)
     return res.json()
 }
+
+export const getUsers = async () => {
+    const res = await fetch(`${BASE_URL}/users`)
+    return res.json()
+}

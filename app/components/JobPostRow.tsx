@@ -1,4 +1,5 @@
 import { Building2, LucideIcon, MapPin, MoreVertical, Pencil, Trash2, Users } from "lucide-react"
+import Link from "next/link"
 import React from "react"
 import DeleteJobDialog from "./DeleteJobDialog";
 interface Job {
@@ -114,6 +115,14 @@ const JobPostRow = ({ job }:{job:Job}) => {
       {/* Actions */}
       <td className="px-6 py-4 text-right">
         <div className="flex items-center justify-end gap-1.5">
+          <Link
+            href={`/dashboard/recruiter/jobs/${job._id}/applications`}
+            className="inline-flex cursor-pointer items-center gap-1 rounded-xl border border-neutral-700/60 bg-neutral-800 px-3 py-1.5 text-xs font-medium text-neutral-200 transition-colors hover:bg-neutral-700"
+          >
+            <Users className="h-3.5 w-3.5 text-neutral-400" />
+            <span>View Applications</span>
+          </Link>
+
           <button className="inline-flex cursor-pointer items-center gap-1 rounded-xl border border-neutral-700/60 bg-neutral-800 px-3 py-1.5 text-xs font-medium text-neutral-200 transition-colors hover:bg-neutral-700">
             <Pencil className="h-3.5 w-3.5 text-neutral-400" />
             <span>Update</span>
