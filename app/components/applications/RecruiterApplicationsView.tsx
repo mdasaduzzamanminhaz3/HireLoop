@@ -46,26 +46,25 @@ export default function RecruiterApplicationsView({
     hired: applications.filter((a) => a.status === "hired").length,
   };
 
-  const handleStatusChange = async (
+const handleStatusChange = async (
     id: string,
     applicantName: string,
     status: ApplicationStatus
   ) => {
     setSavingId(id);
-    const res = await updateApplicationStatus(id, status);
+    const res = await updateApplicationStatus(id, status); 
     setSavingId(null);
 
-    if (res.ok) {
+    if (res && res.success === true) {
       toast.add({
         title: "Status updated",
         description: `${applicantName} moved to "${status}"`,
       });
-      // সার্ভার থেকে ফ্রেশ ডাটা রিলোড করে UI আপডেট করবে
-      router.refresh();
+      router.refresh(); 
     } else {
       toast.add({
         title: "Update failed",
-        description: "Could not update the applicant status. Please try again.",
+        description: res?.message || "Could not update the applicant status. Please try again.",
       });
     }
   };

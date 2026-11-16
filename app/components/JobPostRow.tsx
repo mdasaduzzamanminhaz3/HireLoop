@@ -39,6 +39,7 @@ const JobPostRow = ({ job }:{job:Job}) => {
     <tr className="group transition-colors hover:bg-[#16161a]/60">
       {/* Job Title & Dept */}
       <td className="px-6 py-4">
+      <Link href={`/browse-jobs/${job._id}`}>
         <div className="flex items-center gap-3">
           <div
             className={`rounded-xl border p-2.5 ${job.iconBg} flex items-center justify-center`}
@@ -54,8 +55,8 @@ const JobPostRow = ({ job }:{job:Job}) => {
             </div>
           </div>
         </div>
+  </Link>
       </td>
-
       {/* Company & Location */}
       <td className="px-6 py-4">
         <div className="font-medium text-neutral-200">{job.company}</div>
