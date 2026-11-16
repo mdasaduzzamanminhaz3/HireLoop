@@ -12,10 +12,13 @@ import {
 import { createJob } from "@/lib/actions/jobs";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 
 export type JobFormData = {
   title: string;
   companyName: string;
+  recruiterId:string;
+  companyId?:string;
   category: string;
   jobType: string;
   isRemote: boolean;
@@ -35,6 +38,8 @@ export default function CreateJobPage() {
   const [jobType, setJobType] = useState("Full-time");
   const [isRemote, setIsRemote] = useState(false);
   const router = useRouter();
+  const {data:session} = useSession();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -52,6 +57,7 @@ export default function CreateJobPage() {
     const jobData: JobFormData = {
       title: rawData.title as string,
       companyName: rawData.companyName as string,
+      recruiterId:session?.user.id ?? "",
       category: rawData.category as string,
       jobType: jobType, 
       isRemote: isRemote,

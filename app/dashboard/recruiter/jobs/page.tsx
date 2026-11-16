@@ -1,5 +1,6 @@
 import JobPostRow from '@/app/components/JobPostRow';
 import { getJobs } from '@/lib/api/jobs';
+import { getSession } from '@/lib/core/server';
 import { Plus,LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
@@ -25,7 +26,8 @@ maxSalary:number;
 
 
 const ManageJobPage = async() => {
-    const jobs = await getJobs();
+  const session = await getSession();
+    const jobs = await getJobs(`recruiterId=${session?.user.id}`);
     return (
 <div className="flex-1 w-full min-h-screen bg-[#0c0c0e] text-white p-6 md:p-10">
       <div className="max-w-7xl mx-auto space-y-8">
