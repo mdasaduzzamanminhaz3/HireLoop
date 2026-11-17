@@ -1,6 +1,3 @@
-// Applications API (real backend, hireloop-server).
-// GET  /applications?jobId=...  — list applications for a job
-// PATCH /applications/:id       — update an application's status
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
