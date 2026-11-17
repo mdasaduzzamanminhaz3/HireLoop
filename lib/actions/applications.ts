@@ -1,6 +1,6 @@
 import { ApplicationPayload } from "@/app/components/job-details/JobHeaderCard";
 
-const BASE_URL= process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"
+const BASE_URL= process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
 
 export const applyToAJob = async(data:ApplicationPayload) => {
 const res = await fetch(`${BASE_URL}/applications`,{

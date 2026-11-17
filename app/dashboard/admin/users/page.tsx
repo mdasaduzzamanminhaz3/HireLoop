@@ -1,6 +1,6 @@
 import React from 'react';
-import { getUsers } from '@/lib/api/users';
 import AdminUsersTable from '@/app/components/admin/AdminUsersTable';
+import { getUsers } from '@/lib/api/users.server';
 
 const AdminUsersPage = async () => {
     const data = await getUsers().catch(() => ({ users: [], total: 0 }));
