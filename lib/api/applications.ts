@@ -1,3 +1,4 @@
+import { authFetch } from "../core/server";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
@@ -37,7 +38,8 @@ export interface RecruiterApplication {
 }
 
 export const getApplicationsByJob = async (jobId: string): Promise<RecruiterApplication[]> => {
-  const res = await fetch(`${BASE_URL}/applications?jobId=${jobId}`);
+  const api = `${BASE_URL}/applications?jobId=${jobId}`
+  const res = await authFetch(api);
   const data = await res.json();
   
   return Array.isArray(data) ? data : [];

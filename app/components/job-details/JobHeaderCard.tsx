@@ -83,7 +83,7 @@ export default function JobHeaderCard({
           archived:false,
         }
         const res = await applyToAJob(application)
-        console.log(res)
+        console.log("job application result",res)
         if (res.acknowledged === true) {
           toast.add({title:"Application submited",description:"Your application has been submited successfully"})
           router.push("/browse-jobs")
