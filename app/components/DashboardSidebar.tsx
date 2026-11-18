@@ -93,7 +93,7 @@ export function DashboardSidebar() {
         {/* User Card */}
         <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-[#141417] border border-neutral-800/80">
           <Image
-            src={session?.user?.image || "https://avatar.iran.liara.run/public/boy"}
+            src={session?.user?.image || "https://i.pinimg.com/736x/f5/47/d8/f547d800625af9056d62efe8969aeea0.jpg"}
             alt="User Avatar"
             width={36}
             height={36}
@@ -120,7 +120,7 @@ export function DashboardSidebar() {
               return (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
-                    asChild
+                   
                     isActive={isActive}
                     className={`w-full h-auto px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 ${
                       isActive
