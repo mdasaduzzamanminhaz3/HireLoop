@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminUsersTable from '@/app/components/admin/AdminUsersTable';
 import { getUsers } from '@/lib/api/users';
-
+export const dynamic = 'force-dynamic';
 const AdminUsersPage = async () => {
     const data = await getUsers().catch(() => ({ users: [], total: 0 }));
     const users = Array.isArray(data?.users) ? data.users : [];

@@ -89,7 +89,7 @@ export default function SignUpPage() {
         email,
         password,
         name,
-        role: selectedRole, 
+        role: selectedRole as "seeker" | "recruiter", 
         image: uploadedImageUrl, // ImgBB final url
       }); 
 

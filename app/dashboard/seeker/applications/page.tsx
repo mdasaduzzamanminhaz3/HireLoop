@@ -67,7 +67,7 @@ const applications = await getApplications(`applicantId=${session?.user.id}`);
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-800/60">
-                {applications.map((app) => (
+                {applications.map((app:any) => (
                   <ApplicationRow key={app._id} app={app} />
                 ))}
               </tbody>

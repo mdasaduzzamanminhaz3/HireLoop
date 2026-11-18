@@ -1,23 +1,13 @@
 import React from "react";
 import { Building2 } from "lucide-react";
 import Link from "next/link";
+import { Application } from "@/app/types";
 
-export interface Application {
-  _id: {
-    $oid?: string;
-  } | string;
-  jobId: string;
-  userId: string;
-  email: string;
-  jobTitle: string;
-  companyName: string;
-  jobType?: string;
-  applyDate?: string;    
-  appliedDate?: string;  
-  status?: string;
+interface ApplicationRowProps {
+  app: Application;
 }
 
-export default function ApplicationRow({ app }: { app: Application }) {
+export default function ApplicationRow({ app }: ApplicationRowProps) {
  
   const formatDate = (dateString?: string) => {
     if (!dateString) return "Recently";
